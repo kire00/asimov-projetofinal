@@ -201,9 +201,10 @@ body {
         padding: 1rem;
 
         .table-container {
+          max-height: 400px;
+          overflow-y: auto;
           background-color: $transparent-bg;
           border-radius: 15px;
-          overflow: hidden;
           border: 2px solid $primary-color;
 
           table {

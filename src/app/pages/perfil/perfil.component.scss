@@ -216,7 +216,7 @@ body {
       background-color: $white-color;
       border-radius: 15px;
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-      overflow: auto;
+      overflow: hidden;
 
       h3 {
         color: $white-color;
@@ -260,9 +260,10 @@ body {
       }
 
       .table-container {
+        max-height: 400px; // Adicione esta linha para definir a altura máxima
+        overflow: auto; // Adicione esta linha para habilitar a rolagem
         background-color: $transparent-bg;
         border-radius: 15px;
-        overflow: hidden;
         border: 2px solid $primary-color;
 
         table {
