@@ -86,7 +86,6 @@ export class EstoqueComponent implements OnInit {
         const productData = productSnap.data() as Product;
         productData.id = productSnap.id;
 
-
         const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
         if (stockSnapshot && stockSnapshot.docs) {
           productData.stock = stockSnapshot.docs.reduce((acc, doc) => acc + (doc.data() as Stock).quantity, 0);
@@ -161,95 +160,88 @@ export class EstoqueComponent implements OnInit {
   }
 
   async efetuarBaixa() {
-    const currentUser = this.afAuth.currentUser;
-    currentUser.then(user => {
-      if (user) {
-        const batch = this.db.firestore.batch();
-        const now = firebase.firestore.Timestamp.fromDate(new Date());
-        const userEmail = user.email || 'Unknown';
+    const currentUser = await this.afAuth.currentUser;
+    if (currentUser) {
+      const batch = this.db.firestore.batch();
+      const now = firebase.firestore.Timestamp.fromDate(new Date());
+      const userEmail = currentUser.email || 'Unknown';
 
-        const promises = Object.keys(this.selectedProducts).map(async (productId) => {
-          const decreaseAmount = this.selectedProducts[productId];
-          const productRef = this.db.collection('products').doc(productId).ref;
+      const promises = Object.keys(this.selectedProducts).map(async (productId) => {
+        const decreaseAmount = this.selectedProducts[productId];
+        const productRef = this.db.collection('products').doc(productId).ref;
 
+        const productDoc = await productRef.get();
+        if (productDoc.exists) {
+          const productData = productDoc.data() as Product;
 
-          const productDoc = await productRef.get();
-          if (productDoc.exists) {
-            const productData = productDoc.data() as Product;
-            const currentStock = productData.stock;
+          const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
+          if (stockSnapshot && stockSnapshot.docs.length > 0) {
+            const totalStock = stockSnapshot.docs.reduce((acc, doc) => acc + (doc.data() as Stock).quantity, 0);
 
+            if (totalStock >= decreaseAmount) {
+              let remainingAmount = decreaseAmount;
 
-            const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
-            if (stockSnapshot && stockSnapshot.docs.length > 0) {
-              const stockData = stockSnapshot.docs.map(doc => doc.data() as Stock);
-              const totalStock = stockData.reduce((acc, stock) => acc + stock.quantity, 0);
+              for (const stockDoc of stockSnapshot.docs) {
+                const stockRef = stockDoc.ref;
+                const stockItem = stockDoc.data() as Stock;
 
+                if (remainingAmount > 0) {
+                  const availableStock = stockItem.quantity;
 
-              if (totalStock >= decreaseAmount) {
-                let remainingAmount = decreaseAmount;
-
-                for (const stockDoc of stockSnapshot.docs) {
-                  const stockRef = stockDoc.ref;
-                  const stockItem = stockDoc.data() as Stock;
-
-                  if (remainingAmount > 0) {
-                    const availableStock = stockItem.quantity;
-
-                    if (availableStock <= remainingAmount) {
-                      batch.delete(stockRef);
-                      remainingAmount -= availableStock;
-                    } else {
-                      batch.update(stockRef, { quantity: availableStock - remainingAmount });
-                      remainingAmount = 0;
-                    }
+                  if (availableStock <= remainingAmount) {
+                    batch.delete(stockRef);
+                    remainingAmount -= availableStock;
                   } else {
-                    break;
+                    batch.update(stockRef, { quantity: availableStock - remainingAmount });
+                    remainingAmount = 0;
                   }
+                } else {
+                  break;
                 }
-
-                batch.update(productRef, { stock: totalStock - decreaseAmount, lastEditDate: now, editedBy: userEmail });
-
-                const log: StockLog = {
-                  productId,
-                  action: 'Baixa',
-                  quantity: decreaseAmount,
-                  date: now,
-                  user: userEmail
-                };
-                const logRef = this.db.collection('stockLogs').doc().ref;
-                batch.set(logRef, log);
-
-                const userRef = this.db.collection('users').doc(user.uid).ref;
-                batch.update(userRef, {
-                  history: firebase.firestore.FieldValue.arrayUnion({
-                    action: 'Baixa',
-                    product: productData.name,
-                    lote: productId,
-                    date: now.toDate() 
-                  })
-                });
-              } else {
-                alert(`Estoque insuficiente para o produto ${productData.name}`);
               }
+
+              batch.update(productRef, { stock: totalStock - decreaseAmount, lastEditDate: now, editedBy: userEmail });
+
+              const log: StockLog = {
+                productId,
+                action: 'Baixa',
+                quantity: decreaseAmount,
+                date: now,
+                user: userEmail
+              };
+              const logRef = this.db.collection('stockLogs').doc().ref;
+              batch.set(logRef, log);
+
+              const userRef = this.db.collection('users').doc(currentUser.uid).ref;
+              batch.update(userRef, {
+                history: firebase.firestore.FieldValue.arrayUnion({
+                  action: 'Baixa',
+                  product: productData.name,
+                  lote: productId,
+                  date: now.toDate() 
+                })
+              });
             } else {
-              alert(`Estoque não encontrado para o produto ${productData.name}`);
+              alert(`Estoque insuficiente para o produto ${productData.name}`);
             }
           } else {
-            alert('Produto não encontrado');
+            alert(`Estoque não encontrado para o produto ${productData.name}`);
           }
-        });
+        } else {
+          alert('Produto não encontrado');
+        }
+      });
 
-        Promise.all(promises).then(() => {
-          batch.commit().then(() => {
-            alert('Baixa de produtos efetuada com sucesso');
-            this.selectedProducts = {};
-            this.loadProducts(); 
-          }).catch(error => {
-            alert('Erro ao efetuar baixa: ' + error.message);
-          });
+      Promise.all(promises).then(() => {
+        batch.commit().then(() => {
+          alert('Baixa de produtos efetuada com sucesso');
+          this.selectedProducts = {};
+          this.loadProducts(); 
+        }).catch(error => {
+          alert('Erro ao efetuar baixa: ' + error.message);
         });
-      }
-    });
+      });
+    }
   }
 
   getSelectedProductCount(): number {

@@ -22,6 +22,25 @@ interface User {
   uid: string;
 }
 
+interface Log {
+  action: string;
+  productId: string;
+  productName: string;
+  date: firebase.firestore.Timestamp;
+}
+
+interface Product {
+  id?: string;
+  name: string;
+  type: string;
+  brand: string;
+  description: string;
+  stock: number;
+  registrationDate: firebase.firestore.Timestamp;
+  lastEditDate: firebase.firestore.Timestamp;
+  editedBy: string;
+}
+
 @Component({
   selector: 'app-perfil',
   templateUrl: './perfil.component.html',
@@ -84,20 +103,43 @@ export class PerfilComponent implements OnInit {
             registrationDate: registrationDate || new Date(),
             role: userData.role || '',
             imageURL: userData.imageURL || this.defaultImageUrl,
-            history: userData.history || [],
+            history: [],
             uid: uid
           };
 
-          if (!userData.history) {
+          // Load history from StockLog
+          const stockLogsSnapshot = await this.db.collection('stockLogs', ref => ref.where('user', '==', userData.email)).get().toPromise();
+          if (stockLogsSnapshot) {
+            for (const log of stockLogsSnapshot.docs) {
+              const logData = log.data() as Log;
+              const productDoc = await this.db.collection('products').doc(logData.productId).get().toPromise();
+              const productName = productDoc && productDoc.exists ? (productDoc.data() as Product).name : 'Unknown';
+              this.user!.history!.push({
+                action: logData.action,
+                product: productName,
+                lote: logData.productId,
+                date: logData.date
+              });
+            }
+          }
 
-            await this.db.collection('users').doc(uid).update({
-              history: []
+          // Load history from Products (editions)
+          const editedProductsSnapshot = await this.db.collection('products', ref => ref.where('editedBy', '==', userData.email)).get().toPromise();
+          if (editedProductsSnapshot) {
+            editedProductsSnapshot.forEach(product => {
+              const productData = product.data() as Product;
+              this.user!.history!.push({
+                action: 'Edição',
+                product: productData.name,
+                lote: product.id!,
+                date: productData.lastEditDate
+              });
             });
           }
 
-          if (this.user.history) {
-            this.totalProductsViewed = this.user.history.length;
-            this.sortedHistory = this.sortHistory(this.user.history);
+          if (this.user!.history) {
+            this.totalProductsViewed = this.user!.history.length;
+            this.sortedHistory = this.sortHistory(this.user!.history);
           }
         } else {
           console.log("User data not found in database.");
