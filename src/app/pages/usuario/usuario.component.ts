@@ -8,7 +8,7 @@ interface User {
   name: string;
   email: string;
   identificationCode: string;
-  registrationDate: any; // Modificar para aceitar qualquer tipo
+  registrationDate: any; 
   role: string;
   imageURL?: string;
 }
@@ -58,7 +58,7 @@ export class UsuarioComponent implements OnInit {
         userData.registrationDate = userData.registrationDate?.toDate ? userData.registrationDate.toDate() : userData.registrationDate;
         return userData;
       });
-      this.users.sort((a, b) => a.role === 'admin' ? -1 : 1); // Admin first
+      this.users.sort((a, b) => a.role === 'admin' ? -1 : 1); 
     });
   }
 

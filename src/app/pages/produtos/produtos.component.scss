@@ -171,7 +171,7 @@ body {
 
       .products-header {
         display: flex;
-        justify-content: flex-end; /* Alinhar à direita */
+        justify-content: flex-end; 
         align-items: center;
         margin-bottom: 1rem;
 
@@ -222,7 +222,7 @@ body {
             }
 
             tbody tr {
-              background-color: $transparent-bg; // Set transparent background for all rows
+              background-color: $transparent-bg; 
             }
 
             tbody tr:hover {
@@ -230,7 +230,7 @@ body {
             }
 
             thead th {
-              border-bottom: 1px solid $white-color; // White line separating header from body
+              border-bottom: 1px solid $white-color; 
             }
           }
         }
@@ -280,8 +280,8 @@ body {
       border-radius: 15px;
       width: 600px;
       max-width: 90%;
-      max-height: 90%; /* Ajuste para evitar que ocupe toda a altura */
-      overflow-y: auto; /* Para permitir rolagem se o conteúdo for grande */
+      max-height: 90%; 
+      overflow-y: auto; 
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
       text-align: left;
 
@@ -310,7 +310,7 @@ body {
 
         textarea {
           resize: vertical;
-          height: 150px; /* Aumentar a altura da área de texto */
+          height: 150px; 
         }
 
         input[disabled] {

@@ -134,7 +134,7 @@ export class ProdutosComponent implements OnInit {
         editedBy: product.editedBy
       });
       this.showModal = true;
-      this.closeOptionsModal(); // Fechar o modal de opções ao editar
+      this.closeOptionsModal(); 
     }
   }
 
@@ -148,7 +148,6 @@ export class ProdutosComponent implements OnInit {
           editedBy: user?.email || 'Unknown'
         };
         this.db.collection('products').doc(this.currentProductId!).update(updatedProduct).then(() => {
-          // Adiciona o histórico de edição no documento do usuário
           const userRef = this.db.collection('users').doc(user?.uid);
           userRef.update({
             history: firebase.firestore.FieldValue.arrayUnion({
@@ -176,7 +175,7 @@ export class ProdutosComponent implements OnInit {
     if (productId && confirm('Tem certeza que deseja excluir este produto?')) {
       this.db.collection('products').doc(productId).delete().then(() => {
         alert('Produto excluído com sucesso');
-        this.closeOptionsModal(); // Fechar o modal de opções ao excluir
+        this.closeOptionsModal(); 
       }).catch(error => {
         alert('Erro ao excluir produto: ' + error.message);
       });

@@ -252,7 +252,7 @@ body {
             }
 
             tbody tr {
-              background-color: $transparent-bg; // Set transparent background for all rows
+              background-color: $transparent-bg; 
             }
 
             tbody tr:hover {
@@ -260,7 +260,7 @@ body {
             }
 
             thead th {
-              border-bottom: 1px solid $white-color; // White line separating header from body
+              border-bottom: 1px solid $white-color; 
             }
 
             .description-cell {
@@ -272,8 +272,8 @@ body {
 
             .stock-input {
               max-width: 60px;
-              padding: 0.25rem; // Adjust padding for smaller input size
-              text-align: center; // Center-align text
+              padding: 0.25rem;
+              text-align: center; 
             }
           }
         }

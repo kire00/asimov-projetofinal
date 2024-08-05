@@ -1,11 +1,11 @@
-/* home.component.scss */
+
 .home-container {
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   height: 100vh;
-  background-color: #8B1C10; /* Cor de fundo semelhante à imagem fornecida */
+  background-color: #8B1C10; 
 
   .logo {
     width: 100px;
@@ -24,7 +24,7 @@
     margin-top: 20px;
 
     .btn {
-      background-color: #FF8C00; /* Cor laranja para os botões */
+      background-color: #FF8C00; 
       border: none;
       color: white;
       padding: 15px 32px;
@@ -33,13 +33,13 @@
       display: inline-block;
       font-size: 16px;
       cursor: pointer;
-      border-radius: 30px; /* Bordas arredondadas */
-      width: 200px; /* Largura fixa para os botões */
-      height: 50px; /* Altura fixa para os botões */
+      border-radius: 30px; 
+      width: 200px; 
+      height: 50px; 
       transition: background-color 0.3s ease;
 
       &:hover {
-        background-color: #FFA500; /* Cor mais clara ao passar o mouse */
+        background-color: #FFA500; 
       }
     }
   }

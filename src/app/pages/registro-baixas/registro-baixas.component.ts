@@ -32,7 +32,7 @@ export class RegistroBaixasComponent implements OnInit {
   logs: Log[] = [];
   filteredLogs: Log[] = [];
   filterForm: FormGroup;
-  sortCriteria: string = 'date'; // default sort criteria
+  sortCriteria: string = 'date'; 
 
   constructor(
     private db: AngularFirestore,

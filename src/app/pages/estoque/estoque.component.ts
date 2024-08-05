@@ -42,7 +42,7 @@ export class EstoqueComponent implements OnInit {
   filteredProducts: Product[] = [];
   selectedProducts: { [key: string]: number } = {};
   filterForm: FormGroup;
-  sortCriteria: string = 'name'; // default sort criteria
+  sortCriteria: string = 'name'; 
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -86,7 +86,7 @@ export class EstoqueComponent implements OnInit {
         const productData = productSnap.data() as Product;
         productData.id = productSnap.id;
 
-        // Buscar quantidade de estoque da coleção 'stock'
+
         const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
         if (stockSnapshot && stockSnapshot.docs) {
           productData.stock = stockSnapshot.docs.reduce((acc, doc) => acc + (doc.data() as Stock).quantity, 0);
@@ -172,19 +172,19 @@ export class EstoqueComponent implements OnInit {
           const decreaseAmount = this.selectedProducts[productId];
           const productRef = this.db.collection('products').doc(productId).ref;
 
-          // Obtenha o produto atual
+
           const productDoc = await productRef.get();
           if (productDoc.exists) {
             const productData = productDoc.data() as Product;
             const currentStock = productData.stock;
 
-            // Buscar estoque da coleção 'stock'
+
             const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
             if (stockSnapshot && stockSnapshot.docs.length > 0) {
               const stockData = stockSnapshot.docs.map(doc => doc.data() as Stock);
               const totalStock = stockData.reduce((acc, stock) => acc + stock.quantity, 0);
 
-              // Verifica se o estoque é suficiente para a baixa
+
               if (totalStock >= decreaseAmount) {
                 let remainingAmount = decreaseAmount;
 
@@ -219,14 +219,13 @@ export class EstoqueComponent implements OnInit {
                 const logRef = this.db.collection('stockLogs').doc().ref;
                 batch.set(logRef, log);
 
-                // Adiciona o registro de baixa no histórico do usuário
                 const userRef = this.db.collection('users').doc(user.uid).ref;
                 batch.update(userRef, {
                   history: firebase.firestore.FieldValue.arrayUnion({
                     action: 'Baixa',
                     product: productData.name,
                     lote: productId,
-                    date: now.toDate() // Certifique-se de converter para Date
+                    date: now.toDate() 
                   })
                 });
               } else {
@@ -244,7 +243,7 @@ export class EstoqueComponent implements OnInit {
           batch.commit().then(() => {
             alert('Baixa de produtos efetuada com sucesso');
             this.selectedProducts = {};
-            this.loadProducts(); // Reload products to update the stock
+            this.loadProducts(); 
           }).catch(error => {
             alert('Erro ao efetuar baixa: ' + error.message);
           });

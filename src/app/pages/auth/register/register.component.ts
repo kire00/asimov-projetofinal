@@ -67,11 +67,10 @@ export class RegisterComponent {
         .then((userCredential) => {
           const user = userCredential.user;
           if (user) {
-            // Pega o UID do usuário
             const uid = user.uid;
             const registrationDate = firebase.firestore.Timestamp.fromDate(new Date());
 
-            // Salva os dados do usuário no Firestore, incluindo a URL da imagem padrão e a data de registro
+           
             this.db.collection('users').doc(uid).set({
               name: name,
               email: email,

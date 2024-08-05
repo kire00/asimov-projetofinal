@@ -159,7 +159,7 @@ body {
         cursor: pointer;
         transition: background-color 0.3s ease, transform 0.3s ease;
         margin-top: 1rem;
-        width: 100%; /* Make buttons full width */
+        width: 100%; 
 
         &:hover {
           background-color: lighten($primary-color, 10%);

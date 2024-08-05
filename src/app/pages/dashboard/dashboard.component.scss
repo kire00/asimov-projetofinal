@@ -1,4 +1,4 @@
-/* dashboard.component.scss */
+
 $background-color: #8B1C10;
 $primary-color: #8B1C10;
 $button-color: #FFA500;
@@ -19,7 +19,7 @@ body {
 
   header {
     display: flex;
-    height: 100px; /* Aumenta a altura do cabeçalho */
+    height: 100px; 
     width: 100%;
 
     .logo-container {
@@ -27,14 +27,14 @@ body {
       align-items: center;
       justify-content: center;
       background-color: $primary-color;
-      flex: 1; /* Ocupa um terço da largura */
-      max-width: 33.33%; /* Limita a largura máxima a um terço da tela */
-      padding: 1rem; /* Aumenta o padding */
-      border-right: 2px solid $white-color; /* Adiciona a borda branca ao lado direito */
-      border-bottom: 4px solid $white-color; /* Adiciona a borda inferior */
+      flex: 1;
+      max-width: 33.33%; 
+      padding: 1rem; 
+      border-right: 2px solid $white-color; 
+      border-bottom: 4px solid $white-color; 
 
       .logo {
-        width: 60px; /* Aumenta o tamanho da logo */
+        width: 60px; 
         height: 60px;
       }
 
@@ -50,18 +50,18 @@ body {
       justify-content: center;
       align-items: center;
       background-color: $white-color;
-      flex: 2; /* Ocupa o restante da largura */
-      max-width: 66.67%; /* Limita a largura máxima a dois terços da tela */
-      padding: 0 1rem; /* Ajusta o padding */
+      flex: 2; 
+      max-width: 66.67%; 
+      padding: 0 1rem; 
 
       .nav-button {
         background-color: $primary-color;
         color: $white-color;
         border: none;
-        padding: 0.75rem 1.5rem; /* Aumenta o padding dos botões */
-        font-size: 1.1rem; /* Aumenta o tamanho da fonte dos botões */
+        padding: 0.75rem 1.5rem; 
+        font-size: 1.1rem; 
         border-radius: 25px;
-        margin: 0 0.5rem; /* Ajusta a margem para espaçar os botões uniformemente */
+        margin: 0 0.5rem; 
         cursor: pointer;
         transition: background-color 0.3s ease, transform 0.3s ease;
 

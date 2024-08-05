@@ -33,14 +33,14 @@ export class PerfilComponent implements OnInit {
   selectedFile: File | null = null;
   defaultImageUrl: string = 'https://firebasestorage.googleapis.com/v0/b/projeto-final-asimov-69208.appspot.com/o/avatar.png?alt=media';
   showModal = false;
-  sortCriteria: string = 'date'; // default sort criteria
+  sortCriteria: string = 'date'; 
   sortedHistory: Array<{
     action: string;
     product: string;
     lote: string;
     date: firebase.firestore.Timestamp;
   }> = [];
-  isAdminViewingOtherProfile: boolean = false; // Flag to check if admin is viewing other profile
+  isAdminViewingOtherProfile: boolean = false; 
 
   constructor(
     private afAuth: AngularFireAuth,
@@ -89,7 +89,7 @@ export class PerfilComponent implements OnInit {
           };
 
           if (!userData.history) {
-            // Initialize history field if it doesn't exist
+
             await this.db.collection('users').doc(uid).update({
               history: []
             });
@@ -113,9 +113,9 @@ export class PerfilComponent implements OnInit {
   sortHistory(history: Array<{ action: string; product: string; lote: string; date: firebase.firestore.Timestamp }>): Array<{ action: string; product: string; lote: string; date: firebase.firestore.Timestamp }> {
     return history.sort((a, b) => {
       if (this.sortCriteria === 'date') {
-        return b.date.toDate().getTime() - a.date.toDate().getTime(); // Mais recente primeiro
+        return b.date.toDate().getTime() - a.date.toDate().getTime(); 
       } else {
-        return a.date.toDate().getTime() - b.date.toDate().getTime(); // Mais antigo primeiro
+        return a.date.toDate().getTime() - b.date.toDate().getTime();
       }
     });
   }
@@ -148,7 +148,7 @@ export class PerfilComponent implements OnInit {
                 imageURL: url
               }).then(() => {
                 alert('Foto de perfil atualizada com sucesso');
-                this.showModal = false; // Hide the modal after saving
+                this.showModal = false;
               }).catch(error => {
                 alert('Erro ao atualizar foto de perfil: ' + error.message);
               });
