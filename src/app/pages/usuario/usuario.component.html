@@ -1,0 +1,33 @@
+<div class="usuarios-page">
+  <header>
+    <div class="logo-container">
+      <a routerLink="/dashboard">
+        <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+      </a>
+      <h2 class="page-name">Usuários</h2>
+    </div>
+    <nav>
+      <button class="nav-button" routerLink="/perfil">Perfil</button>
+      <button class="nav-button" routerLink="/usuarios" [ngClass]="{'active': isActive('/usuarios')}">Usuários</button>
+      <button class="nav-button" routerLink="/produtos">Produtos</button>
+      <button class="nav-button" routerLink="/estoque">Estoque</button>
+      <button class="nav-button" routerLink="/registros">Registros</button>
+    </nav>
+  </header>
+  <div class="usuarios-container">
+    <div class="user-card" *ngFor="let user of users.slice(currentPage * usersPerPage, (currentPage + 1) * usersPerPage)">
+      <img [src]="user.imageURL || 'assets/images/user-placeholder.png'" alt="User Image" class="user-image">
+      <h2>{{ user.name }}</h2>
+      <p class="role" [ngClass]="{'admin-role': user.role === 'admin'}">{{ user.role }}</p>
+      <p><strong>E-mail:</strong> {{ user.email }}</p>
+      <p><strong>Código de identificação:</strong> {{ user.identificationCode }}</p>
+      <p><strong>Usuário cadastrado desde:</strong> {{ user.registrationDate | date: 'dd/MM/yyyy' }}</p>
+      <button *ngIf="currentUser?.role === 'admin' && user.role !== 'admin'" (click)="viewUserProfile(user.uid)">Ver Perfil</button>
+      <button *ngIf="currentUser?.role === 'admin' && user.role !== 'admin'" (click)="deleteUser(user.uid)">Excluir</button>
+    </div>
+  </div>
+  <div class="navigation-buttons">
+    <button (click)="prevPage()" [disabled]="currentPage === 0">Anterior</button>
+    <button (click)="nextPage()" [disabled]="currentPage >= totalPages - 1">Próximo</button>
+  </div>
+</div>

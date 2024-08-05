@@ -1,0 +1,23 @@
+<!-- dashboard.component.html -->
+<div class="dashboard-page">
+    <header>
+      <div class="logo-container">
+        <img src="assets/images/logo-construe-stock-branco.png" alt="ConstrueStock Logo" class="logo">
+        <span class="company-name">ConstrueStock</span>
+      </div>
+      <nav>
+        <button class="nav-button" routerLink="/perfil">Perfil</button>
+        <button class="nav-button" routerLink="/usuarios">Usuários</button>
+        <button class="nav-button" routerLink="/produtos">Produtos</button>
+        <button class="nav-button" routerLink="/estoque">Estoque</button>
+        <button class="nav-button" routerLink="/registros">Registros</button>
+      </nav>
+    </header>
+    <main>
+      <h1>Bem-vindo, usuário!</h1>
+      <div class="button-container">
+        <button class="action-button" (click)="logout()">Trocar usuário</button>
+        <button class="action-button" (click)="logout()">Sair</button>
+      </div>
+    </main>
+  </div>

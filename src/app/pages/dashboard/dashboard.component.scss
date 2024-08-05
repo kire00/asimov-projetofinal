@@ -1,0 +1,127 @@
+/* dashboard.component.scss */
+$background-color: #8B1C10;
+$primary-color: #8B1C10;
+$button-color: #FFA500;
+$text-color: #FFFFFF;
+$white-color: #FFFFFF;
+
+body {
+  margin: 0;
+  font-family: 'Helvetica Neue', Arial, sans-serif;
+  background-color: $background-color;
+  color: $text-color;
+}
+
+.dashboard-page {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+
+  header {
+    display: flex;
+    height: 100px; /* Aumenta a altura do cabeçalho */
+    width: 100%;
+
+    .logo-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: $primary-color;
+      flex: 1; /* Ocupa um terço da largura */
+      max-width: 33.33%; /* Limita a largura máxima a um terço da tela */
+      padding: 1rem; /* Aumenta o padding */
+      border-right: 2px solid $white-color; /* Adiciona a borda branca ao lado direito */
+      border-bottom: 4px solid $white-color; /* Adiciona a borda inferior */
+
+      .logo {
+        width: 60px; /* Aumenta o tamanho da logo */
+        height: 60px;
+      }
+
+      .company-name {
+        color: $white-color;
+        font-size: 1.5rem;
+        margin-left: 0.5rem;
+      }
+    }
+
+    nav {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      background-color: $white-color;
+      flex: 2; /* Ocupa o restante da largura */
+      max-width: 66.67%; /* Limita a largura máxima a dois terços da tela */
+      padding: 0 1rem; /* Ajusta o padding */
+
+      .nav-button {
+        background-color: $primary-color;
+        color: $white-color;
+        border: none;
+        padding: 0.75rem 1.5rem; /* Aumenta o padding dos botões */
+        font-size: 1.1rem; /* Aumenta o tamanho da fonte dos botões */
+        border-radius: 25px;
+        margin: 0 0.5rem; /* Ajusta a margem para espaçar os botões uniformemente */
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+
+        &:hover {
+          background-color: darken($primary-color, 10%);
+          transform: translateY(-3px);
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba($primary-color, 0.5);
+        }
+      }
+    }
+  }
+
+  main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background-color: $background-color;
+
+    h1 {
+      color: $white-color;
+      font-size: 2.5rem;
+      margin-bottom: 2rem;
+    }
+
+    .button-container {
+      display: flex;
+
+      .action-button {
+        background-color: $button-color;
+        color: $white-color;
+        border: none;
+        padding: 0.75rem 1.5rem;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 25px;
+        cursor: pointer;
+        transition: background-color 0.3s ease, transform 0.3s ease;
+        margin: 0 1rem;
+
+        &:hover {
+          background-color: lighten($button-color, 10%);
+          transform: translateY(-3px);
+        }
+
+        &:focus {
+          outline: none;
+          box-shadow: 0 0 0 3px rgba($button-color, 0.5);
+        }
+
+        &:disabled {
+          background-color: darken($button-color, 20%);
+          cursor: not-allowed;
+        }
+      }
+    }
+  }
+}

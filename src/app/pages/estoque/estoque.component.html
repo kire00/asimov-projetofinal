@@ -1,0 +1,104 @@
+<div class="estoque-page">
+  <header>
+    <div class="logo-container">
+      <a routerLink="/dashboard">
+        <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+      </a>
+      <h2 class="page-name">Estoque</h2>
+    </div>
+    <nav>
+      <button class="nav-button" routerLink="/perfil" [ngClass]="{'active': isActive('/perfil')}">Perfil</button>
+      <button class="nav-button" routerLink="/usuarios" [ngClass]="{'active': isActive('/usuarios')}">Usuários</button>
+      <button class="nav-button" routerLink="/produtos">Produtos</button>
+      <button class="nav-button" routerLink="/estoque" [ngClass]="{'active': isActive('/estoque')}">Estoque</button>
+      <button class="nav-button" routerLink="/registros" [ngClass]="{'active': isActive('/registros')}">Registros</button>
+    </nav>
+  </header>
+  <div class="products-count-container">
+    <div class="products-count">{{ getSelectedProductCount() }} produtos selecionados</div>
+  </div>
+  <div class="content-container">
+    <div class="main-content">
+      <div class="filters-section">
+        <h3 class="filters-title">Filtros</h3>
+        <div class="filter-container">
+          <form [formGroup]="filterForm">
+            <label for="name">Nome</label>
+            <input id="name" formControlName="name" type="text" placeholder="Procure pelo produto..." />
+
+            <br>
+            <br>
+
+            <label for="registrationDate">Data de cadastro</label>
+            <input id="registrationDate" formControlName="registrationDate" type="date" />
+            <br>
+            <br>
+
+            <label for="lote">Lote</label>
+            <input id="lote" formControlName="lote" type="text" placeholder="Procure pelo Lote (UID)..." />
+
+            <br>
+            <br>
+            <label for="type">Tipo</label>
+            <select id="type" formControlName="type">
+              <option value="">Todos</option>
+              <option value="Ferramentas manuais">Ferramentas manuais</option>
+              <option value="Ferramentas elétricas">Ferramentas elétricas</option>
+              <option value="Materiais de construção">Materiais de construção</option>
+              <option value="Tintas e acabamentos">Tintas e acabamentos</option>
+              <option value="Tubos e conexões">Tubos e conexões</option>
+            </select>
+          </form>
+        </div>
+      </div>
+      <div class="products-section">
+        <div class="products-header">
+          <button class="efetuar-baixa-button" (click)="efetuarBaixa()" [disabled]="getSelectedProductCount() === 0">Efetuar baixa</button>
+          <div class="sort-container">
+            <label for="sortCriteria">Ordenar por</label>
+            <select id="sortCriteria" (change)="onSortChange($event)">
+              <option value="registrationDate">Mais recente</option>
+              <option value="registrationDateAsc">Mais antigo</option>
+              <option value="name">Ordem alfabética A-Z</option>
+              <option value="nameDesc">Ordem alfabética Z-A</option>
+            </select>
+          </div>
+        </div>
+        <div class="products-container">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Selecionar</th>
+                  <th (click)="setSortCriteria('name')">Nome</th>
+                  <th>Tipo</th>
+                  <th>Marca</th>
+                  <th>Lote</th>
+                  <th (click)="setSortCriteria('registrationDate')">Data de cadastro</th>
+                  <th>Última edição</th>
+                  <th>Editado por</th>
+                  <th>Estoque Atual</th>
+                  <th>Quantidade da Baixa</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of filteredProducts">
+                  <td><input type="checkbox" (change)="toggleProductSelection(product.id!)" [checked]="selectedProducts[product.id!] !== undefined" /></td>
+                  <td>{{ product.name }}</td>
+                  <td>{{ product.type }}</td>
+                  <td>{{ product.brand }}</td>
+                  <td>{{ product.id }}</td>
+                  <td>{{ product.registrationDate.toDate() | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ product.lastEditDate.toDate() | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ product.editedBy }}</td>
+                  <td>{{ product.stock }}</td>
+                  <td><input type="number" (change)="handleStockChange(product.id!, $event)" [disabled]="selectedProducts[product.id!] === undefined" class="stock-input" /></td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

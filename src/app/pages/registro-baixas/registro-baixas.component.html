@@ -1,0 +1,103 @@
+<div class="registros-page">
+  <header>
+    <div class="logo-container">
+      <a routerLink="/dashboard">
+        <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+      </a>
+      <h2 class="page-name">Registros</h2>
+    </div>
+    <nav>
+      <button class="nav-button" routerLink="/perfil" [ngClass]="{'active': isActive('/perfil')}">Perfil</button>
+      <button class="nav-button" routerLink="/usuarios" [ngClass]="{'active': isActive('/usuarios')}">Usuários</button>
+      <button class="nav-button" routerLink="/produtos">Produtos</button>
+      <button class="nav-button" routerLink="/estoque" [ngClass]="{'active': isActive('/estoque')}">Estoque</button>
+      <button class="nav-button" routerLink="/registros" [ngClass]="{'active': isActive('/registros')}">Registros</button>
+    </nav>
+  </header>
+  <div class="products-count-container">
+    <div class="products-count">{{ filteredLogs.length }} registros encontrados</div>
+  </div>
+  <div class="content-container">
+    <div class="main-content">
+      <div class="filters-section">
+        <h3 class="filters-title">Filtros</h3>
+        <div class="filter-container">
+          <form [formGroup]="filterForm">
+            <label for="productName">Nome do Produto</label>
+            <input id="productName" formControlName="productName" type="text" placeholder="Nome do produto..." />
+
+            <br>
+            <br>
+
+            <label for="user">Usuário</label>
+            <input id="user" formControlName="user" type="text" placeholder="E-mail do usuário..." />
+
+            <br>
+            <br>
+
+            <label for="date">Data</label>
+            <input id="date" formControlName="date" type="date" />
+            <br>
+            <br>
+
+            <label for="lote">Lote</label>
+            <input id="lote" formControlName="lote" type="text" placeholder="Lote do produto..." />
+            
+            <label for="type">Tipo</label>
+            <select id="type" formControlName="type">
+              <option value="">Todos</option>
+              <option value="Ferramentas manuais">Ferramentas manuais</option>
+              <option value="Ferramentas elétricas">Ferramentas elétricas</option>
+              <option value="Materiais de construção">Materiais de construção</option>
+              <option value="Tintas e acabamentos">Tintas e acabamentos</option>
+              <option value="Tubos e conexões">Tubos e conexões</option>
+            </select>
+          </form>
+        </div>
+      </div>
+      <div class="logs-section">
+        <div class="logs-header">
+          <div class="sort-container">
+            <label for="sortCriteria">Ordenar por</label>
+            <select id="sortCriteria" (change)="onSortChange($event)">
+              <option value="date">Mais recente</option>
+              <option value="dateAsc">Mais antigo</option>
+              <option value="name">Ordem alfabética A-Z</option>
+              <option value="nameDesc">Ordem alfabética Z-A</option>
+            </select>
+          </div>
+        </div>
+        <div class="logs-container">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th>Nome do Produto</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Lote</th>
+                  <th>Data</th>
+                  <th>Usuário</th>
+                  <th>Ação</th>
+                  <th>Quantidade</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let log of filteredLogs">
+                  <td>{{ log.productName }}</td>
+                  <td class="description-cell">{{ log.productDescription }}</td>
+                  <td>{{ log.productType }}</td>
+                  <td>{{ log.productId }}</td>
+                  <td>{{ log.date.toDate() | date: 'dd/MM/yyyy' }}</td>
+                  <td>{{ log.user }}</td>
+                  <td>{{ log.action }}</td>
+                  <td>{{ log.quantity }}</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

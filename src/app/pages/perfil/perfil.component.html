@@ -1,0 +1,84 @@
+<div class="perfil-page">
+  <header>
+    <div class="logo-container">
+      <a routerLink="/dashboard">
+        <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+      </a>
+      <h2 class="page-name">Perfil</h2>
+    </div>
+    <nav>
+      <button class="nav-button" routerLink="/perfil" [ngClass]="{'active': isActive('/perfil')}">Perfil</button>
+      <button class="nav-button" routerLink="/usuarios" [ngClass]="{'active': isActive('/usuarios')}">Usuários</button>
+      <button class="nav-button" routerLink="/produtos">Produtos</button>
+      <button class="nav-button" routerLink="/estoque">Estoque</button>
+      <button class="nav-button" routerLink="/registros" [ngClass]="{'active': isActive('/registros')}">Registros</button>
+    </nav>
+  </header>
+  <div class="perfil-container">
+    <div class="user-info">
+      <div class="image-container">
+        <img [src]="user?.imageURL || defaultImageUrl" alt="User Image" class="user-image">
+        <div class="edit-icon" *ngIf="!isAdminViewingOtherProfile" (click)="showFileInputModal()">&#9998;</div>
+      </div>
+      <h2>{{ user?.name }}</h2>
+      <p>{{ user?.role }}</p>
+      <br>
+      <br>
+      <p><strong>E-mail:</strong> {{ user?.email }}</p>
+      <br>
+      <p><strong>Código de identificação:</strong> {{ user?.identificationCode }}</p>
+      <br>
+      <p><strong>Usuário cadastrado desde:</strong> {{ user?.registrationDate | date: 'dd/MM/yyyy' }}</p>
+      <br>
+      <br>
+      <button class="logout-button" *ngIf="!isAdminViewingOtherProfile" (click)="logout()">Sair</button>
+    </div>
+    <div class="user-history">
+      <div class="history-header">
+        <h3>{{ totalProductsViewed }} produtos visualizados</h3>
+        <div class="sort-container">
+          <label for="sortCriteria">Ordenar por</label>
+          <select id="sortCriteria" (change)="onSortChange($event)">
+            <option value="date">Mais recente</option>
+            <option value="dateAsc">Mais antigo</option>
+          </select>
+        </div>
+      </div>
+      <br>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Ação</th>
+              <th>Produto</th>
+              <th>Lote</th>
+              <th>Data da ação</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let entry of sortedHistory">
+              <td>{{ entry.action }}</td>
+              <td>{{ entry.product }}</td>
+              <td>{{ entry.lote }}</td>
+              <td>{{ entry.date.toDate() | date: 'dd/MM/yyyy' }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <div class="back-button-container" *ngIf="isAdminViewingOtherProfile">
+    <button class="back-button" (click)="goBack()">Voltar</button>
+  </div>
+
+  <!-- Modal -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <span class="close" (click)="hideFileInputModal()">&times;</span>
+      <h2>Trocar Foto de Perfil</h2>
+      <input id="profileImage" type="file" (change)="onFileSelected($event)" />
+      <button class="btn" type="button" (click)="onSaveProfile()">Salvar Foto</button>
+    </div>
+  </div>
+</div>

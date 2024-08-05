@@ -1,0 +1,162 @@
+<div class="produtos-page">
+  <header>
+    <div class="logo-container">
+      <a routerLink="/dashboard">
+        <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+      </a>
+      <h2 class="page-name">Produtos</h2>
+    </div>
+    <nav>
+      <button class="nav-button" routerLink="/perfil">Perfil</button>
+      <button class="nav-button" routerLink="/usuarios">Usuários</button>
+      <button class="nav-button" routerLink="/produtos" [ngClass]="{'active': isActive('/produtos')}">Produtos</button>
+      <button class="nav-button" routerLink="/estoque">Estoque</button>
+      <button class="nav-button" routerLink="/registros">Registros</button>
+    </nav>
+  </header>
+  <div class="products-count-container">
+    <div class="products-count">{{ filteredProducts.length }} produtos cadastrados</div>
+  </div>
+  <div class="content-container">
+    <div class="main-content">
+      <div class="filters-section">
+        <h3 class="filters-title">Filtros</h3>
+        <div class="filter-container">
+          <form [formGroup]="filterForm">
+            <label for="name">Nome</label>
+            <input id="name" formControlName="name" type="text" placeholder="Procure pelo produto..." />
+
+            <br>
+            <br>
+
+            <label for="registrationDate">Data de cadastro</label>
+            <input id="registrationDate" formControlName="registrationDate" type="date" />
+            <br>
+            <br>
+            
+            <label for="type">Tipo</label>
+            <select id="type" formControlName="type">
+              <option value="">Todos</option>
+              <option value="Ferramentas manuais">Ferramentas manuais</option>
+              <option value="Ferramentas elétricas">Ferramentas elétricas</option>
+              <option value="Materiais de construção">Materiais de construção</option>
+              <option value="Tintas e acabamentos">Tintas e acabamentos</option>
+              <option value="Tubos e conexões">Tubos e conexões</option>
+            </select>
+          </form>
+        </div>
+      </div>
+      <div class="products-section">
+        <div class="products-header">
+          <div class="sort-container">
+            <label for="sortCriteria">Ordenar por</label>
+            <select id="sortCriteria" (change)="onSortChange($event)">
+              <option value="registrationDate">Mais recente</option>
+              <option value="registrationDateAsc">Mais antigo</option>
+              <option value="name">Ordem alfabética A-Z</option>
+              <option value="nameDesc">Ordem alfabética Z-A</option>
+            </select>
+          </div>
+        </div>
+        <div class="products-container">
+          <div class="table-container">
+            <table>
+              <thead>
+                <tr>
+                  <th (click)="setSortCriteria('name')">Nome</th>
+                  <th>Descrição</th>
+                  <th>Tipo</th>
+                  <th>Marca</th>
+                  <th>Estoque</th>
+                  <th (click)="setSortCriteria('registrationDate')">Data de cadastro</th>
+                  <th>Opções</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let product of filteredProducts">
+                  <td>{{ product.name }}</td>
+                  <td class="description-cell">{{ product.description }}</td>
+                  <td>{{ product.type }}</td>
+                  <td>{{ product.brand }}</td>
+                  <td>{{ product.stock }}</td>
+                  <td>{{ product.registrationDate.toDate() | date: 'dd/MM/yyyy' }}</td>
+                  <td>
+                    <button class="options-button" (click)="openOptionsModal(product)">
+                      &#x22EE;
+                    </button>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de entrada de dados -->
+  <div class="modal" *ngIf="showModal">
+    <div class="modal-content">
+      <h2 *ngIf="editMode">Editar Produto</h2>
+      <form [formGroup]="productForm" (ngSubmit)="updateProduct()">
+        <div class="form-group">
+          <label for="name">Nome:</label>
+          <input id="name" formControlName="name" type="text" placeholder="Nome do produto" />
+        </div>
+
+        <div class="form-group">
+          <label for="description">Descrição:</label>
+          <textarea id="description" formControlName="description" placeholder="Descrição do produto"></textarea>
+        </div>
+
+        <div class="form-group">
+          <label for="type">Tipo:</label>
+          <select id="type" formControlName="type">
+            <option value="Ferramentas manuais">Ferramentas manuais</option>
+            <option value="Ferramentas elétricas">Ferramentas elétricas</option>
+            <option value="Materiais de construção">Materiais de construção</option>
+            <option value="Tintas e acabamentos">Tintas e acabamentos</option>
+            <option value="Tubos e conexões">Tubos e conexões</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="brand">Marca:</label>
+          <input id="brand" formControlName="brand" type="text" placeholder="Marca do produto" />
+        </div>
+
+        <div class="form-group">
+          <label for="registrationDate">Data de cadastro:</label>
+          <input id="registrationDate" formControlName="registrationDate" type="date" [disabled]="true" />
+        </div>
+
+        <div class="form-group">
+          <label for="lastEditDate">Data da última edição:</label>
+          <input id="lastEditDate" formControlName="lastEditDate" type="date" [disabled]="true" />
+        </div>
+
+        <div class="form-group">
+          <label for="editedBy">Usuário que editou:</label>
+          <input id="editedBy" formControlName="editedBy" type="text" [disabled]="true" />
+        </div>
+
+        <div class="modal-buttons">
+          <button type="button" (click)="closeModal()">Fechar</button>
+          <button type="submit" [disabled]="!productForm.valid">Salvar edições</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal de opções -->
+  <div class="modal" *ngIf="showOptionsModal">
+    <div class="modal-content">
+      <h2>Opções</h2>
+      <div class="modal-buttons modal-options">
+        <button class="edit-button" (click)="selectedProduct ? editProduct(selectedProduct) : null">Editar</button>
+        <button class="delete-button" (click)="selectedProduct ? deleteProduct(selectedProduct.id) : null">Excluir</button>
+        <button class="cancel-button" (click)="closeOptionsModal()">Cancelar</button>
+      </div>
+    </div>
+  </div>
+</div>

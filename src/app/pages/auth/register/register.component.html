@@ -1,0 +1,43 @@
+<!-- register.component.html -->
+<div class="register-page">
+  <div class="logo-container">
+    <img src="assets/images/logo-construe-stock-vermelho.png" alt="ConstrueStock Logo" class="logo">
+    <h1>ConstrueStock</h1>
+  </div>
+  <div class="register-container">
+    <div class="register-form-container" *ngIf="step === 1">
+      <h2>Cadastro</h2>
+      <form [formGroup]="registerForm" (ngSubmit)="nextStep()">
+        <label for="name">Nome*</label>
+        <input id="name" type="text" formControlName="name" placeholder="Nome" />
+        <label for="email">E-mail*</label>
+        <input id="email" type="email" formControlName="email" placeholder="E-mail" />
+        <label for="identificationCode">Código de identificação*</label>
+        <input id="identificationCode" type="text" formControlName="identificationCode" placeholder="Código de identificação" />
+        <label>Eu sou um(a):*</label>
+        <div class="role-selection">
+          <label for="leitor"><input type="radio" id="leitor" formControlName="role" value="leitor" />Leitor</label>
+          <label for="estoquista"><input type="radio" id="estoquista" formControlName="role" value="estoquista" />Estoquista</label>
+        </div>
+        <button type="submit" [disabled]="!registerForm.valid" class="btn-primary">Próximo</button>
+      </form>
+    </div>
+
+    <div class="register-form-container" *ngIf="step === 2">
+      <h2>Cadastro</h2>
+      <form [formGroup]="passwordForm" (ngSubmit)="onRegister()">
+        <div *ngIf="registerForm.get('role')?.value === 'leitor'" class="alert alert-info">
+          Ao cadastrar como leitor, somente será possível acessar os dados, sendo a alteração de quaisquer informações limitada aos usuários cadastrados como “estoquistas”.
+        </div>
+        <div *ngIf="registerForm.get('role')?.value === 'estoquista'" class="alert alert-info">
+          Ao cadastrar como estoquista, será possível acessar todos os dados, sendo permitida a alteração de quaisquer informações referentes aos produtos e clientes.
+        </div>
+        <label for="password">Senha*</label>
+        <input id="password" type="password" formControlName="password" placeholder="Senha" />
+        <label for="confirmPassword">Confirmar Senha*</label>
+        <input id="confirmPassword" type="password" formControlName="confirmPassword" placeholder="Confirmar Senha" />
+        <button type="submit" [disabled]="!passwordForm.valid" class="btn-primary">Cadastrar</button>
+      </form>
+    </div>
+  </div>
+</div>
