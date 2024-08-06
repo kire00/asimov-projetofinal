@@ -23,14 +23,16 @@ import { PerfilComponent } from './pages/perfil/perfil.component';
 import { ProdutosComponent } from './pages/produtos/produtos.component';
 import { RegistroBaixasComponent } from './pages/registro-baixas/registro-baixas.component';
 import { UsuarioComponent } from './pages/usuario/usuario.component';
+import { AuthGuard } from './guards/auth.guard';
+import { RedirectGuard } from './guards/redirect.guard';
 
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/home', pathMatch: 'full' },
+  { path: '', component: HomeComponent, canActivate: [RedirectGuard] },
+  { path: 'dashboard', component: DashboardComponent, canActivate: [AuthGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
   { path: 'home', component: HomeComponent },
-  { path: 'dashboard', component: DashboardComponent },
   { path: 'perfil', component: PerfilComponent },
   { path: 'usuarios', component: UsuarioComponent },
   { path: 'produtos', component: ProdutosComponent },
