@@ -148,21 +148,21 @@ export class ProdutosComponent implements OnInit {
           editedBy: user?.email || 'Unknown'
         };
         this.db.collection('products').doc(this.currentProductId!).update(updatedProduct).then(() => {
-          const userRef = this.db.collection('users').doc(user?.uid);
-          userRef.update({
-            history: firebase.firestore.FieldValue.arrayUnion({
-              action: 'Edição',
-              product: updatedProduct.name,
-              lote: this.currentProductId,
-              date: firebase.firestore.Timestamp.fromDate(new Date())
-            })
-          }).then(() => {
+          const editHistory = {
+            action: 'Edição',
+            product: updatedProduct.name,
+            lote: this.currentProductId,
+            date: firebase.firestore.Timestamp.fromDate(new Date()),
+            editedBy: user?.email || 'Unknown'
+          };
+          const editRef = this.db.collection('productEdits').doc().ref;
+          editRef.set(editHistory).then(() => {
             alert('Produto atualizado com sucesso');
             this.showModal = false;
             this.editMode = false;
             this.productForm.reset();
           }).catch(error => {
-            alert('Erro ao registrar histórico: ' + error.message);
+            alert('Erro ao registrar histórico de edição: ' + error.message);
           });
         }).catch(error => {
           alert('Erro ao atualizar produto: ' + error.message);
@@ -170,6 +170,7 @@ export class ProdutosComponent implements OnInit {
       });
     }
   }
+  
 
   deleteProduct(productId: string | undefined) {
     if (productId && confirm('Tem certeza que deseja excluir este produto?')) {

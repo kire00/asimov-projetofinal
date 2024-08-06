@@ -106,7 +106,7 @@ export class PerfilComponent implements OnInit {
             history: [],
             uid: uid
           };
-
+  
           // Load history from StockLog
           const stockLogsSnapshot = await this.db.collection('stockLogs', ref => ref.where('user', '==', userData.email)).get().toPromise();
           if (stockLogsSnapshot) {
@@ -122,21 +122,21 @@ export class PerfilComponent implements OnInit {
               });
             }
           }
-
-          // Load history from Products (editions)
-          const editedProductsSnapshot = await this.db.collection('products', ref => ref.where('editedBy', '==', userData.email)).get().toPromise();
-          if (editedProductsSnapshot) {
-            editedProductsSnapshot.forEach(product => {
-              const productData = product.data() as Product;
-              this.user!.history!.push({
-                action: 'Edição',
-                product: productData.name,
-                lote: product.id!,
-                date: productData.lastEditDate
-              });
+  
+          // Load history from ProductEdits
+          const editsSnapshot = await this.db.collection('productEdits', ref => ref.where('editedBy', '==', userData.email)).get().toPromise();
+          if (editsSnapshot) {
+            editsSnapshot.forEach(editDoc => {
+              const editData = editDoc.data() as {
+                action: string;
+                product: string;
+                lote: string;
+                date: firebase.firestore.Timestamp;
+              };
+              this.user!.history!.push(editData);
             });
           }
-
+  
           if (this.user!.history) {
             this.totalProductsViewed = this.user!.history.length;
             this.sortedHistory = this.sortHistory(this.user!.history);
@@ -151,6 +151,8 @@ export class PerfilComponent implements OnInit {
       console.error("Error loading user profile:", error);
     }
   }
+  
+  
 
   sortHistory(history: Array<{ action: string; product: string; lote: string; date: firebase.firestore.Timestamp }>): Array<{ action: string; product: string; lote: string; date: firebase.firestore.Timestamp }> {
     return history.sort((a, b) => {
