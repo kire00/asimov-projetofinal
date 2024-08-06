@@ -26,6 +26,7 @@ interface Stock {
 
 interface StockLog {
   productId: string | undefined;
+  productName: string; // Adicionando o campo productName
   action: string;
   quantity: number;
   date: firebase.firestore.Timestamp;
@@ -165,29 +166,29 @@ export class EstoqueComponent implements OnInit {
       const batch = this.db.firestore.batch();
       const now = firebase.firestore.Timestamp.fromDate(new Date());
       const userEmail = currentUser.email || 'Unknown';
-  
+
       const promises = Object.keys(this.selectedProducts).map(async (productId) => {
         const decreaseAmount = this.selectedProducts[productId];
         const productRef = this.db.collection('products').doc(productId).ref;
-  
+
         const productDoc = await productRef.get();
         if (productDoc.exists) {
           const productData = productDoc.data() as Product;
-  
+
           const stockSnapshot = await this.db.collection('stock', ref => ref.where('productName', '==', productData.name)).get().toPromise();
           if (stockSnapshot && stockSnapshot.docs.length > 0) {
             const totalStock = stockSnapshot.docs.reduce((acc, doc) => acc + (doc.data() as Stock).quantity, 0);
-  
+
             if (totalStock >= decreaseAmount) {
               let remainingAmount = decreaseAmount;
-  
+
               for (const stockDoc of stockSnapshot.docs) {
                 const stockRef = stockDoc.ref;
                 const stockItem = stockDoc.data() as Stock;
-  
+
                 if (remainingAmount > 0) {
                   const availableStock = stockItem.quantity;
-  
+
                   if (availableStock <= remainingAmount) {
                     batch.delete(stockRef);
                     remainingAmount -= availableStock;
@@ -199,11 +200,12 @@ export class EstoqueComponent implements OnInit {
                   break;
                 }
               }
-  
+
               batch.update(productRef, { stock: totalStock - decreaseAmount });
-  
+
               const log: StockLog = {
                 productId,
+                productName: productData.name, // Adicionando o nome do produto ao log
                 action: 'Baixa',
                 quantity: decreaseAmount,
                 date: now,
@@ -211,14 +213,14 @@ export class EstoqueComponent implements OnInit {
               };
               const logRef = this.db.collection('stockLogs').doc().ref;
               batch.set(logRef, log);
-  
+
               const userRef = this.db.collection('users').doc(currentUser.uid).ref;
               batch.update(userRef, {
                 history: firebase.firestore.FieldValue.arrayUnion({
                   action: 'Baixa',
                   product: productData.name,
                   lote: productId,
-                  date: now
+                  date: now.toDate() 
                 })
               });
             } else {
@@ -231,19 +233,6 @@ export class EstoqueComponent implements OnInit {
           alert('Produto não encontrado');
         }
       });
-  
-      Promise.all(promises).then(() => {
-        batch.commit().then(() => {
-          alert('Baixa de produtos efetuada com sucesso');
-          this.selectedProducts = {};
-          this.loadProducts(); 
-        }).catch(error => {
-          alert('Erro ao efetuar baixa: ' + error.message);
-        });
-      });
-    
-  
-  
 
       Promise.all(promises).then(() => {
         batch.commit().then(() => {
